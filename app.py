@@ -24,6 +24,16 @@ if not openai.api_key:
 def index():
     return render_template('index.html')
 
+@app.route('/historico/<string:_id>', methods=['GET'])
+def get_historico(_id):
+    user = mongo.db.usuarios.find_one({"_id": ObjectId(_id)})
+
+    if user is None:
+        return {"erro": "Usuario não encontrado"}, 404
+        
+    return render_template('historico.html'), 200
+
+
 @app.route('/gerar_guia', methods=['POST'])
 def gerar_guia():
     # Obter dados do formulário
