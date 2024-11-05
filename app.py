@@ -99,7 +99,7 @@ def profile():
 
 @app.route('/plano')
 def index():
-    return render_template('index.html')
+    return render_template('index.html'), 200
 
 @app.route('/historico/<string:_id>', methods=['GET'])
 def get_historico(_id):
@@ -110,77 +110,81 @@ def get_historico(_id):
         
     return render_template('historico.html'), 200
 
-
 @app.route('/gerar_guia', methods=['POST'])
 def gerar_guia():
     # Obter dados do formulário
-    nome = request.form.get('nome')
-    orcamento = Decimal(request.form.get('orcamento'))
-    descricao_viagem = request.form.get('descricao_viagem')
-    dias = request.form.get('dias')
-    numero_viajantes = request.form.get('numero_viajantes')
-    data_inicio = request.form.get('data_inicio')
+    try:
+        nome = request.form.get('nome')
+        orcamento = Decimal(request.form.get('orcamento'))
+        descricao_viagem = request.form.get('descricao_viagem')
+        dias = request.form.get('dias')
+        numero_viajantes = request.form.get('numero_viajantes')
+        data_inicio = request.form.get('data_inicio')
 
-    # Criar o prompt para a API
-    prompt = f"""
-    Você é um assistente de viagem especializado em criar planos de viagem completos e personalizados.
+        # Verificação de dados obrigatórios
+        if not all([nome, orcamento, descricao_viagem, dias, numero_viajantes, data_inicio]):
+            return jsonify({"error": "Todos os campos são obrigatórios."}), 400
 
-    **Informações do usuário:**
-    - Nome: {nome}
-    - Orçamento total: {orcamento} reais
-    - Descrição da viagem: {descricao_viagem}
-    - Número de dias planejados: {dias}
-    - Número de viajantes: {numero_viajantes}
-    - Data de início da viagem: {data_inicio}
-    - Local de partida: São Paulo
+        # Criar o prompt para a API
+        prompt = f"""
+        Você é um assistente de viagem especializado em criar planos de viagem completos e personalizados.
 
-    **Objetivo do plano de viagem:**
-    Desenvolva um plano de viagem completo que seja realista e que caiba no orçamento total de {orcamento} reais. Respeite as preferências descritas e siga as seguintes orientações:
+        **Informações do usuário:**
+        - Nome: {nome}
+        - Orçamento total: {orcamento} reais
+        - Descrição da viagem: {descricao_viagem}
+        - Número de dias planejados: {dias}
+        - Número de viajantes: {numero_viajantes}
+        - Data de início da viagem: {data_inicio}
+        - Local de partida: São Paulo
 
-    1. **Estrutura da viagem:**
-       - A viagem deve começar na data de início especificada ({data_inicio}).
-       - Se nao for necessario ou comum trocar de uma cidade para outra, nao troque
-       - As cidades devem ser próximas entre si e combinar com a descrição da viagem.
+        **Objetivo do plano de viagem:**
+        Desenvolva um plano de viagem completo que seja realista e que caiba no orçamento total de {orcamento} reais. Respeite as preferências descritas e siga as seguintes orientações:
 
-    2. **Planejamento de hospedagem:**
-       - Mantenha a mesma hospedagem na mesma cidade por todos os dias de estadia. Evite trocar de acomodação sem necessidade enquanto o usuário estiver na mesma cidade.
-       - Inclua o custo total da hospedagem por noite multiplicado pelo número de viajantes ({numero_viajantes}).
+        1. **Estrutura da viagem:**
+           - A viagem deve começar na data de início especificada ({data_inicio}).
+           - Se nao for necessario ou comum trocar de uma cidade para outra, nao troque
+           - As cidades devem ser próximas entre si e combinar com a descrição da viagem.
 
-    3. **Planejamento diário:**
-       - Para cada dia, forneça um itinerário com:
-         - Opção de hospedagem (sem troca de hospedagem durante a estadia na mesma cidade)
-         - Transporte (local e entre cidades, se aplicável)
-         - Alimentação (custo estimado por dia)
-         - Atividades ou atrações que combinem com o estilo de viagem, com breve descrição e custo estimado
-       - Ajuste o custo total diário para incluir o número de viajantes ({numero_viajantes}).
+        2. **Planejamento de hospedagem:**
+           - Mantenha a mesma hospedagem na mesma cidade por todos os dias de estadia. Evite trocar de acomodação sem necessidade enquanto o usuário estiver na mesma cidade.
+           - Inclua o custo total da hospedagem por noite multiplicado pelo número de viajantes ({numero_viajantes}).
 
-    **Formato da resposta:**
-    Responda estritamente no formato JSON conforme especificado, sem qualquer texto adicional ou introdução
+        3. **Planejamento diário:**
+           - Para cada dia, forneça um itinerário com:
+             - Opção de hospedagem (sem troca de hospedagem durante a estadia na mesma cidade)
+             - Transporte (local e entre cidades, se aplicável)
+             - Alimentação (custo estimado por dia)
+             - Atividades ou atrações que combinem com o estilo de viagem, com breve descrição e custo estimado
+           - Ajuste o custo total diário para incluir o número de viajantes ({numero_viajantes}).
 
-    {{
-    "plano_viagem": [
+        **Formato da resposta:**
+        Responda estritamente no formato JSON conforme especificado, sem qualquer texto adicional ou introdução.
+
         {{
-        "dia": X (onde X vai até {dias}),
-        "data": "Data específica ou relativa",
-        "destino": "Nome do destino",
-        "hospedagem": "Nome da hospedagem (mesmo para cada dia na cidade atual) e custo por noite, multiplicado pelo número de viajantes",
-        "transporte": "Detalhes do transporte com custo estimado", (lembre de adiconar no primeiro e ultimo dia o custo da passagem, isso quando necessario)
-        "alimentação": "Custo estimado para alimentação",
-        "atividades": [
+        "plano_viagem": [
             {{
-            "nome": "Nome da atividade",
-            "descrição": "Breve descrição",
-            "custo": "Custo estimado"
+            "dia": X (onde X vai até {dias}),
+            "data": "Data específica ou relativa",
+            "destino": "Nome do destino",
+            "hospedagem": "Nome da hospedagem (mesmo para cada dia na cidade atual) e custo por noite, multiplicado pelo número de viajantes",
+            "transporte": "Detalhes do transporte com custo estimado (incluindo passagem no primeiro e último dia, se necessário)",
+            "alimentação": "Custo estimado para alimentação",
+            "atividades": [
+                {{
+                "nome": "Nome da atividade",
+                "descrição": "Breve descrição",
+                "custo": "Custo estimado"
+                }}
+            ],
+            "custo_total_dia": "Custo total estimado para o dia (multiplicado pelo número de viajantes)"
             }}
         ],
-        "custo_total_dia": "Custo total estimado para o dia (multiplicado pelo número de viajantes)"
+        "custo_total_viagem": "Custo total estimado para toda a viagem"
         }}
-    ],
-    "custo_total_viagem": "Custo total estimado para toda a viagem"
-    }}
-    """
+        """
 
-    try:
+        # Chamada para a API da OpenAI
         resposta = openai.ChatCompletion.create(
             model='gpt-3.5-turbo',
             messages=[
@@ -195,14 +199,18 @@ def gerar_guia():
         conteudo = resposta.choices[0].message['content'].strip()
         print("Conteúdo da resposta:", conteudo)
 
-        # Extrair apenas o JSON da resposta
+        # Extrair JSON da resposta
         json_start = conteudo.find('{')
         json_end = conteudo.rfind('}') + 1
         json_content = conteudo[json_start:json_end]
 
-        dados_guia = json.loads(json_content, parse_float=Decimal)
+        try:
+            dados_guia = json.loads(json_content, parse_float=Decimal)
+        except json.JSONDecodeError as e:
+            print(f"Erro ao decodificar JSON: {e}")
+            return jsonify({"error": "Erro ao processar o plano de viagem."}), 500
 
-        # Limpar e converter custo_total_viagem
+        # Verificação do orçamento
         custo_total_viagem_str = dados_guia.get('custo_total_viagem', '0').replace("R$", "").strip()
         try:
             custo_total_viagem = Decimal(custo_total_viagem_str)
@@ -210,28 +218,26 @@ def gerar_guia():
             print(f"Erro ao converter custo_total_viagem: '{custo_total_viagem_str}'")
             custo_total_viagem = Decimal(0)
 
-        # Verificar orçamento
         if custo_total_viagem > orcamento:
-            guia = "Desculpe, o plano de viagem excede o seu orçamento. Por favor, tente novamente com um orçamento maior."
-            dados_guia = None
-        else:
-            guia = None
-            # Salvar o plano de viagem no MongoDB
-            dados_guia["nome"] = nome
-            dados_guia["orcamento"] = str(orcamento)
-            dados_guia["data_inicio"] = data_inicio
-            mongo.db.planos_de_viagem.insert_one(dados_guia)
+            guia = "O plano de viagem excede o orçamento fornecido. Tente novamente com um orçamento maior."
+            return jsonify({"message": guia}), 400
 
-    except json.JSONDecodeError as e:
-        guia = "Desculpe, ocorreu um erro ao processar o plano de viagem. Por favor, tente novamente mais tarde."
-        print(f"Erro ao decodificar JSON: {e}")
-        dados_guia = None
+        # Salvar plano de viagem no MongoDB
+        dados_guia["nome"] = nome
+        dados_guia["orcamento"] = str(orcamento)
+        dados_guia["data_inicio"] = data_inicio
+        mongo.db.planos_de_viagem.insert_one(dados_guia)
+
+        # Retornar sucesso com o guia
+        return jsonify({
+            "message": "Plano de viagem gerado com sucesso.",
+            "dados_guia": dados_guia
+        }), 200
+
     except Exception as e:
-        guia = "Desculpe, ocorreu um erro ao gerar o plano de viagem. Por favor, tente novamente mais tarde."
         print(f"Erro ao chamar a API da OpenAI: {e}")
-        dados_guia = None
+        return jsonify({"error": "Erro interno ao gerar o plano de viagem."}), 500
 
-    return render_template('result.html', nome=nome, dados_guia=dados_guia, guia=guia)
 
 if __name__ == '__main__':
     app.run(debug=True)
