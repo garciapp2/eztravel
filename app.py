@@ -5,6 +5,9 @@ import json
 from decimal import Decimal, InvalidOperation
 from dotenv import load_dotenv
 from flask_pymongo import PyMongo
+from bson.objectid import ObjectId
+
+
 
 # Carregar variáveis de ambiente
 load_dotenv()
