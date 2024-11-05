@@ -9,80 +9,26 @@
     <div class="container">
         <h1>Planeje sua Viagem com o EzTravel</h1>
         <form action="/gerar_guia" method="post">
-            <!-- Campos existentes -->
+            <!-- Campos obrigatórios -->
             <label for="nome">Nome:</label>
             <input type="text" id="nome" name="nome" required>
 
             <label for="orcamento">Orçamento (em R$):</label>
             <input type="number" id="orcamento" name="orcamento" required>
 
-            <label for="clima">Clima Preferido:</label>
-            <select id="clima" name="clima" required>
-                <option value="quente">Quente</option>
-                <option value="frio">Frio</option>
-                <option value="tropical">Tropical</option>
-                <option value="temperado">Temperado</option>
-            </select>
+            <label for="descricao_viagem">Descrição da Viagem:</label>
+            <textarea id="descricao_viagem" name="descricao_viagem" rows="5" placeholder="Descreva o que você gostaria nesta viagem..."></textarea>
+            
+            <label for="dias">Dias de Viagem</label>
+            <input type="number" id="dias" name="dias" required>
 
-            <label for="interesses">Interesses (separados por vírgula):</label>
-            <input type="text" id="interesses" name="interesses" required>
+            <label for="numero_viajantes">Numero de Viajantes</label>
+            <input type="number" id="numero_viajantes" name="numero_viajantes" required>
 
-            <!-- Novos campos -->
-            <label for="data_inicio">Data de Início da Viagem (opcional):</label>
-            <input type="date" id="data_inicio" name="data_inicio">
+            <label for="data_inicio">Data de Início:</label>
+            <input type="date" id="data_inicio" name="data_inicio" class="form-control" required min="{{ today }}">
+    
 
-            <label for="data_fim">Data de Fim da Viagem (opcional):</label>
-            <input type="date" id="data_fim" name="data_fim">
-
-            <label for="acomodacao">Tipo de Acomodação Preferida:</label>
-            <select id="acomodacao" name="acomodacao">
-                <option value="hotel">Hotel</option>
-                <option value="hostel">Hostel</option>
-                <option value="airbnb">Airbnb</option>
-                <option value="resort">Resort</option>
-                <option value="pousada">Pousada</option>
-                <option value="tanto faz" selected>Tanto Faz</option>
-            </select>
-
-            <label for="transporte">Meio de Transporte Preferido:</label>
-            <select id="transporte" name="transporte">
-                <option value="avião">Avião</option>
-                <option value="trem">Trem</option>
-                <option value="ônibus">Ônibus</option>
-                <option value="carro">Carro</option>
-                <option value="navio">Navio</option>
-                <option value="tanto faz" selected>Tanto Faz</option>
-            </select>
-
-            <label for="dietas">Dietas ou Restrições Alimentares (opcional):</label>
-            <input type="text" id="dietas" name="dietas">
-
-            <label for="companhia">Companhia de Viagem:</label>
-            <select id="companhia" name="companhia">
-                <option value="sozinho">Sozinho(a)</option>
-                <option value="casal">Casal</option>
-                <option value="família">Família</option>
-                <option value="grupo">Grupo</option>
-            </select>
-
-            <label for="atividade_fisica">Nível de Atividade Física:</label>
-            <select id="atividade_fisica" name="atividade_fisica">
-                <option value="baixo">Baixo</option>
-                <option value="médio">Médio</option>
-                <option value="alto">Alto</option>
-            </select>
-
-            <label for="idiomas">Idiomas Falados (opcional):</label>
-            <input type="text" id="idiomas" name="idiomas">
-
-            <label for="acessibilidade">Necessidades Especiais ou Acessibilidade (opcional):</label>
-            <input type="text" id="acessibilidade" name="acessibilidade">
-
-            <label for="faixa_etaria">Faixa Etária (opcional):</label>
-            <input type="text" id="faixa_etaria" name="faixa_etaria">
-
-            <label for="experiencias">Destinos ou Experiências Anteriores (opcional):</label>
-            <input type="text" id="experiencias" name="experiencias">
 
             <button type="submit">Gerar Plano de Viagem</button>
         </form>
