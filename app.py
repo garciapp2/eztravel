@@ -64,7 +64,7 @@ def gerar_guia():
 
     1. **Estrutura da viagem:**
        - A viagem deve começar na data de início especificada ({data_inicio}).
-       - Cada cidade deve ter um mínimo de 5 dias de estadia antes de sugerir uma mudança para outra cidade. Apenas sugira uma nova cidade após 5 dias no mesmo destino.
+       - Se nao for necessario ou comum trocar de uma cidade para outra, nao troque
        - As cidades devem ser próximas entre si e combinar com a descrição da viagem.
 
     2. **Planejamento de hospedagem:**
