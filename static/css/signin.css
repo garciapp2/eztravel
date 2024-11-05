@@ -1,0 +1,85 @@
+/* Imagem de fundo para a página de cadastro */
+body {
+    font-family: Arial, sans-serif;
+    min-height: 100vh;
+    background-image: url('imagem_fundo.jpg');
+    background-size: cover;
+    background-position: center;
+    color: #ffffff;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.main-header {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    width: calc(100% - 40px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Estilo da caixa de cadastro */
+.signup-overlay {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100vh;
+    /* Remova o background-color para deixar o fundo transparente */
+}
+
+.signup-container {
+    background-color: #ffffff;
+    color: #333333;
+    padding: 40px;
+    border-radius: 10px;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: left;
+}
+
+.signup-container h1 {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.signup-container form {
+    display: flex;
+    flex-direction: column;
+}
+
+.signup-container label {
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+.signup-container input {
+    padding: 10px;
+    font-size: 16px;
+    margin-bottom: 15px;
+    border: 1px solid #cccccc;
+    border-radius: 5px;
+}
+
+.signup-container button {
+    background-color: #5a60ef;
+    color: #ffffff;
+    border: none;
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.signup-container button:hover {
+    background-color: #3b41e0;
+}

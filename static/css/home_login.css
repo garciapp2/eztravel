@@ -1,0 +1,138 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    overflow: hidden;  /* Remove a rolagem para evitar barras brancas */
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-image: url('imagem_fundo.jpg');
+    background-size: cover;
+    background-position: center;
+    color: #ffffff;
+    text-align: center;
+    height: 100vh;
+    overflow: hidden;
+}
+
+
+/* Posicionamento do cabeçalho */
+.main-header {
+    position: relative;
+    width: 100%;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 36px;
+    font-weight: bold;
+    color: #ffffff;
+    margin: 0 auto;
+}
+
+.auth-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.auth-buttons a.sign-in, .auth-buttons a.login {
+    background-color: #ffffff;
+    color: #5a60ef;
+    border: none;
+    padding: 8px 16px;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.auth-buttons a.sign-in:hover, .auth-buttons a.login:hover {
+    background-color: #f0f0f0;
+}
+
+
+.overlay {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+    width: 100%;
+    max-width: 800px;
+    text-align: center;
+    margin-top: 300px;  /* Aumenta a margem superior para mover o conteúdo mais para baixo */
+    background-color: transparent;  /* Remove o fundo azul */
+}
+
+.header h1 {
+    font-size: 36px;
+    font-weight: bold;
+    color: #ffffff;
+    margin-bottom: 20px;
+}
+
+.content h2 {
+    font-size: 28px;
+    font-weight: bold;
+    color: #ffffff;
+    margin-bottom: 10px;
+}
+
+.content p {
+    font-size: 18px;
+    color: #ffffff;
+    margin-bottom: 20px;
+}
+
+
+.cta-button {
+    background-color: #ffffff;
+    color: #5a60ef;
+    border: none;
+    padding: 12px 24px;
+    font-size: 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease;
+}
+
+.cta-button:hover {
+    background-color: #3b41e0;
+}
+
+.logout-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-color: #ffffff;
+    color: #5a60ef;
+    border: none;
+    padding: 8px 16px;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.logout-button:hover {
+    background-color: #f0f0f0;
+}
+
+.user-greeting {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-size: 18px;
+    color: #ffffff;
+}

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EZTRAVEL</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home_login.css') }}">
+</head>
+<body>
+    <header class="main-header">
+        <h1 class="logo">EZTRAVEL</h1>
+
+        {% if session.get('user') %}
+            <div class="user-greeting">Olá, {{ session['user'] }}!</div>
+            <a href="{{ url_for('logout') }}" class="logout-button">Sair</a>
+        {% else %}
+            <div class="auth-buttons">
+                <a href="{{ url_for('signin') }}" class="sign-in">Sign In</a>
+                <a href="{{ url_for('login') }}" class="login">Login</a>
+            </div>
+        {% endif %}
+    </header>
+
+    <div class="overlay">
+        <main class="content">
+            <h2>Uma nova maneira de explorar o mundo</h2>
+            <p>Planeje sua próxima viagem de forma rápida, fácil e totalmente gratuita</p>
+            <!-- Atualize o botão para redirecionar para /plano -->
+            <a href="{{ url_for('index') }}" class="cta-button">Monte seu itinerário</a>
+        </main>
+    </div>
+</body>
+</html>
+
