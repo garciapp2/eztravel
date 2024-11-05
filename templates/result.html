@@ -2,193 +2,53 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>EzTravel - Seu Plano de Viagem Personalizado</title>
-    <!-- CSS do Bootstrap -->
+    <title>Resultado do Plano de Viagem</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <!-- CSS do Leaflet -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <!-- CSS do Leaflet Geocoder -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
-    <!-- Seu CSS personalizado -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <style>
-        /* Estilos para melhorar a aparência do itinerário em linha do tempo */
-        .timeline {
-            position: relative;
-            max-width: 800px;
-            margin: auto;
-            padding: 20px 0;
-        }
-
-        .timeline::after {
-            content: '';
-            position: absolute;
-            width: 6px;
-            background-color: #d4d4d4;
-            top: 0;
-            bottom: 0;
-            left: 50%;
-            margin-left: -3px;
-        }
-
-        .timeline-card {
-            padding: 20px;
-            position: relative;
-            background-color: #f9f9f9;
-            width: 45%;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-
-        .timeline-card.left {
-            left: 0;
-        }
-
-        .timeline-card.right {
-            left: 50%;
-        }
-
-        .timeline-card::after {
-            content: " ";
-            position: absolute;
-            width: 25px;
-            height: 25px;
-            right: -13px;
-            background-color: #fff;
-            border: 4px solid #d4d4d4;
-            top: 15px;
-            border-radius: 50%;
-            z-index: 1;
-        }
-
-        .timeline-card.right::after {
-            left: -13px;
-        }
-
-        .timeline-card h4 {
-            font-size: 1.25rem;
-            margin-bottom: 10px;
-            color: #007bff;
-        }
-
-        .timeline-card p {
-            font-size: 0.95rem;
-        }
-
-        .timeline-card .date {
-            font-weight: bold;
-            color: #888;
-            margin-bottom: 10px;
-        }
-
-        #map {
-            height: 400px;
-            margin-top: 30px;
-        }
-    </style>
 </head>
 <body>
     <div class="container my-5">
-        <h1 class="text-center mb-4">Olá, {{ nome }}!</h1>
-        <h2 class="text-center mb-5">Aqui está o seu plano de viagem personalizado:</h2>
+        <h1 class="text-center">Plano de Viagem Personalizado</h1>
         
         {% if dados_guia %}
-            <div class="timeline">
-                {% for dia in dados_guia.plano_viagem %}
-                    <div class="timeline-card {% if loop.index % 2 == 0 %}right{% else %}left{% endif %}">
-                        <h4>Dia {{ dia.dia }} - {{ dia.destino }}</h4>
-                        <p class="date">Data: {{ dia.data }}</p>
-                        <p><strong>Hospedagem:</strong> {{ dia.hospedagem }}</p>
-                        <p><strong>Transporte:</strong> {{ dia.transporte }}</p>
-                        <h5>Atividades:</h5>
-                        <ul>
-                            {% for atividade in dia.atividades %}
-                                <li>
-                                    <strong>{{ atividade.nome }}</strong>: {{ atividade.descrição }} (Custo: {{ atividade.custo }} reais)
-                                </li>
-                            {% endfor %}
-                        </ul>
-                        <p><strong>Custo total do dia:</strong> {{ dia.custo_total_dia }} reais</p>
+            <div class="mt-4">
+                {% for dia in dados_guia['plano_viagem'] %}
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h4>Dia {{ dia['dia'] }} - {{ dia['destino'] }}</h4>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Data:</strong> {{ dia['data'] }}</p>
+                            <p><strong>Hospedagem:</strong> {{ dia['hospedagem'] }}</p>
+                            <p><strong>Transporte:</strong> {{ dia['transporte'] }}</p>
+                            <p><strong>Alimentação:</strong> {{ dia['alimentação'] }}</p>
+                            <h5>Atividades:</h5>
+                            <ul>
+                                {% for atividade in dia['atividades'] %}
+                                    <li><strong>{{ atividade['nome'] }}</strong>: {{ atividade['descrição'] }} (Custo: {{ atividade['custo'] }} reais)</li>
+                                {% endfor %}
+                            </ul>
+                            <p><strong>Custo total do dia:</strong> {{ dia['custo_total_dia'] }} reais</p>
+                        </div>
                     </div>
                 {% endfor %}
             </div>
-            <h3 class="mt-5">Custo Total da Viagem: {{ dados_guia.custo_total_viagem }} reais</h3>
-            <h3 class="mt-4">Dicas Úteis</h3>
-            <ul>
-                {% for dica in dados_guia.dicas %}
-                    <li>{{ dica }}</li>
-                {% endfor %}
-            </ul>
-            
-            <!-- Mapa dos Destinos -->
-            <h3 class="mt-5">Mapa dos Destinos</h3>
-            <div id="map"></div>
-
+            <h3 class="mt-5">Custo Total da Viagem: {{ dados_guia['custo_total_viagem'] }} reais</h3>
         {% elif guia %}
-            <!-- Mostrar a mensagem de erro -->
-            <div class="alert alert-danger" role="alert">
+            <div class="alert alert-danger text-center" role="alert">
                 {{ guia }}
             </div>
         {% else %}
-            <!-- Caso nenhuma informação esteja disponível -->
-            <div class="alert alert-warning" role="alert">
+            <div class="alert alert-warning text-center" role="alert">
                 Desculpe, não foi possível gerar o plano de viagem.
             </div>
         {% endif %}
 
-        <div class="text-center mt-5">
-            <a href="/" class="btn btn-primary">Voltar</a>
+        <div class="text-center mt-4">
+            <a href="/" class="btn btn-primary">Voltar à Página Inicial</a>
         </div>
     </div>
 
-    <!-- Inclua o jQuery e o JS do Bootstrap -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- JS do Leaflet -->
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <!-- JS do Leaflet Geocoder -->
-    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
-
-    <!-- Script para inicializar o mapa -->
-    <script>
-        // Inicializar o mapa
-        var map = L.map('map').setView([0, 0], 2);
-
-        // Adicionar camadas do OpenStreetMap
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; OpenStreetMap contributors'
-        }).addTo(map);
-
-        // Array para armazenar os destinos
-        var destinos = [];
-
-        // Obter os nomes dos destinos de dados_guia
-        var dadosGuia = {{ dados_guia | tojson }};
-        dadosGuia.plano_viagem.forEach(dia => {
-            destinos.push(dia.destino);
-        });
-        
-        // Função para geocodificar e adicionar marcadores
-        function adicionarMarcadores(destinos) {
-            var geocoder = L.Control.Geocoder.nominatim();
-            var bounds = L.latLngBounds(); // Para ajustar o zoom do mapa com base nos marcadores
-
-            destinos.forEach(function(destino) {
-                geocoder.geocode(destino, function(results) {
-                    if (results && results.length > 0) {
-                        var result = results[0];
-                        var marker = L.marker(result.center).addTo(map)
-                            .bindPopup('<strong>' + destino + '</strong>');
-                        bounds.extend(result.center);
-                        map.fitBounds(bounds);
-                    }
-                });
-            });
-        }
-
-        // Chamar a função para adicionar os marcadores
-        adicionarMarcadores(destinos);
-    </script>
 </body>
 </html>
