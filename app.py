@@ -2,10 +2,9 @@ import os
 from flask import Flask, render_template, request
 import openai
 import json
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
 from dotenv import load_dotenv
 from flask_pymongo import PyMongo
-from bson.objectid import ObjectId
 
 # Carregar variáveis de ambiente
 load_dotenv()
@@ -28,7 +27,7 @@ def index():
 def gerar_guia():
     # Obter dados do formulário
     nome = request.form.get('nome')
-    orcamento = request.form.get('orcamento')
+    orcamento = Decimal(request.form.get('orcamento'))
     descricao_viagem = request.form.get('descricao_viagem')
     dias = request.form.get('dias')
     numero_viajantes = request.form.get('numero_viajantes')
@@ -106,7 +105,7 @@ def gerar_guia():
         )
 
         conteudo = resposta.choices[0].message['content'].strip()
-        print("Conteúdo da resposta:", conteudo)  # Para verificar a resposta
+        print("Conteúdo da resposta:", conteudo)
 
         # Extrair apenas o JSON da resposta
         json_start = conteudo.find('{')
@@ -115,23 +114,25 @@ def gerar_guia():
 
         dados_guia = json.loads(json_content, parse_float=Decimal)
 
-        # Verificar se a resposta contém um erro
-        if 'erro' in dados_guia:
-            guia = dados_guia['erro']
+        # Limpar e converter custo_total_viagem
+        custo_total_viagem_str = dados_guia.get('custo_total_viagem', '0').replace("R$", "").strip()
+        try:
+            custo_total_viagem = Decimal(custo_total_viagem_str)
+        except InvalidOperation:
+            print(f"Erro ao converter custo_total_viagem: '{custo_total_viagem_str}'")
+            custo_total_viagem = Decimal(0)
+
+        # Verificar orçamento
+        if custo_total_viagem > orcamento:
+            guia = "Desculpe, o plano de viagem excede o seu orçamento. Por favor, tente novamente com um orçamento maior."
             dados_guia = None
         else:
-            # Verificar o custo total da viagem
-            custo_total_viagem = Decimal(dados_guia.get('custo_total_viagem', '0'))
-            if custo_total_viagem > Decimal(orcamento):
-                guia = "Desculpe, o plano de viagem excede o seu orçamento. Por favor, tente novamente com um orçamento maior."
-                dados_guia = None
-            else:
-                guia = None
-                # Armazenar o plano de viagem no MongoDB
-                dados_guia["nome"] = nome
-                dados_guia["orcamento"] = orcamento
-                dados_guia["data_inicio"] = data_inicio
-                mongo.db.planos_de_viagem.insert_one(dados_guia)
+            guia = None
+            # Salvar o plano de viagem no MongoDB
+            dados_guia["nome"] = nome
+            dados_guia["orcamento"] = str(orcamento)
+            dados_guia["data_inicio"] = data_inicio
+            mongo.db.planos_de_viagem.insert_one(dados_guia)
 
     except json.JSONDecodeError as e:
         guia = "Desculpe, ocorreu um erro ao processar o plano de viagem. Por favor, tente novamente mais tarde."
