@@ -6,38 +6,27 @@ from decimal import Decimal, InvalidOperation
 from dotenv import load_dotenv
 from flask_pymongo import PyMongo
 from bson.objectid import ObjectId
-import os
 from auth import requires_auth, hash_password, init_mongo, verify_password
 
-
-
-# Carregar variáveis de ambiente
 load_dotenv()
 app = Flask(__name__)
-
-# Configuração do MongoDB
 app.config["MONGO_URI"] = os.getenv("MONGO_URI")
 app.secret_key = os.getenv("SECRET_KEY", "vicco")
 mongo = PyMongo(app)
 
-# Configuração da API OpenAI
 openai.api_key = os.getenv('OPENAI_API_KEY')
 if not openai.api_key:
     raise ValueError("A chave da API OpenAI não está definida. Defina a variável de ambiente 'OPENAI_API_KEY'.")
 
-
-# Inicialize o mongo no auth.py
 init_mongo(mongo)
 
-# Rota para a página principal
 @app.route('/')
 def home():
-    return render_template('index_login.html') , 200
+    return render_template('index_login.html'), 200
 
-# Rota para a página de cadastro
 @app.route('/signin')
 def signin():
-    return render_template('signin.html') , 200
+    return render_template('signin.html'), 200
 
 @app.route('/usuarios', methods=['POST'])
 def create_user():
@@ -60,42 +49,35 @@ def create_user():
 
     return redirect(url_for('success')), 302
 
-# Rota de sucesso
 @app.route('/success')
 def success():
-    return render_template('sucesso.html'), 200 
+    return render_template('sucesso.html'), 200
 
-# Rota para a página de login
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        email = request.form.get('email')  # Mudamos de 'usuario' para 'email'
+        email = request.form.get('email')
         senha = request.form.get('senha')
-        user = mongo.db.usuarios.find_one({"email": email})  # Buscar pelo e-mail
+        user = mongo.db.usuarios.find_one({"email": email})
         if user and verify_password(user['senha'], senha):
-            session['user'] = user['usuario']  # Armazena o usuário na sessão
+            session['user'] = user['usuario']
             return redirect(url_for('profile')), 302
         return jsonify({"error": "E-mail ou senha incorretos"}), 401
 
     return render_template('login.html'), 200
 
-
 @app.route('/logout')
 def logout():
-    session.pop('username', None)  # Remove 'username' da sessão
-    session.pop('user', None)       # Remove 'user' da sessão
-    return redirect(url_for('home')) , 302
+    session.pop('username', None)
+    session.pop('user', None)
+    return redirect(url_for('home')), 302
 
-
-# Rota para a página de perfil
 @app.route('/profile')
 def profile():
-    # Verifica se o usuário está autenticado
     if 'user' not in session:
         return redirect(url_for('login')), 302
 
     return render_template('home_login.html', user=session.get('user')), 200
-
 
 @app.route('/plano')
 def index():
@@ -118,7 +100,7 @@ def gerar_guia():
     user = mongo.db.usuarios.find_one({"usuario": session['user']})
     if not user:
         return jsonify({"error": "Usuário não encontrado"}), 404
-    # Obter dados do formulário
+
     try:
         nome = request.form.get('nome')
         orcamento = Decimal(request.form.get('orcamento'))
@@ -127,11 +109,9 @@ def gerar_guia():
         numero_viajantes = request.form.get('numero_viajantes')
         data_inicio = request.form.get('data_inicio')
 
-        # Verificação de dados obrigatórios
         if not all([nome, orcamento, descricao_viagem, dias, numero_viajantes, data_inicio]):
             return jsonify({"error": "Todos os campos são obrigatórios."}), 400
 
-        # Criar o prompt para a API
         prompt = f"""
         Você é um assistente de viagem especializado em criar planos de viagem completos e personalizados.
 
@@ -190,7 +170,6 @@ def gerar_guia():
         }}
         """
 
-        # Chamada para a API da OpenAI
         resposta = openai.ChatCompletion.create(
             model='gpt-3.5-turbo',
             messages=[
@@ -203,9 +182,6 @@ def gerar_guia():
         )
 
         conteudo = resposta.choices[0].message['content'].strip()
-        print("Conteúdo da resposta:", conteudo)
-
-        # Extrair JSON da resposta
         json_start = conteudo.find('{')
         json_end = conteudo.rfind('}') + 1
         json_content = conteudo[json_start:json_end]
@@ -213,22 +189,19 @@ def gerar_guia():
         try:
             dados_guia = json.loads(json_content, parse_float=Decimal)
         except json.JSONDecodeError as e:
-            print(f"Erro ao decodificar JSON: {e}")
             return jsonify({"error": "Erro ao processar o plano de viagem."}), 500
 
-        # Verificação do orçamento
         custo_total_viagem_str = dados_guia.get('custo_total_viagem', '0').replace("R$", "").strip()
         try:
             custo_total_viagem = Decimal(custo_total_viagem_str)
         except InvalidOperation:
-            print(f"Erro ao converter custo_total_viagem: '{custo_total_viagem_str}'")
             custo_total_viagem = Decimal(0)
 
         if custo_total_viagem > orcamento:
             guia = "O plano de viagem excede o orçamento fornecido. Tente novamente com um orçamento maior."
             return jsonify({"message": guia}), 400
 
-        # Salvar plano de viagem no MongoDB
+        dados_guia["_id"] = ObjectId()
         dados_guia["nome"] = nome
         dados_guia["orcamento"] = str(orcamento)
         dados_guia["data_inicio"] = data_inicio
@@ -239,13 +212,36 @@ def gerar_guia():
             {"$push": {"planos_de_viagem": dados_guia}}
         )
 
-
         return render_template('result.html', dados_guia=dados_guia)
 
     except Exception as e:
-        print(f"Erro ao chamar a API da OpenAI: {e}")
         return jsonify({"error": "Erro interno ao gerar o plano de viagem."}), 500
 
+@app.route('/meus_roteiros')
+def meus_roteiros():
+    if 'user' not in session:
+        return redirect(url_for('login')), 302
+    user = mongo.db.usuarios.find_one({"usuario": session['user']})
+    if not user:
+        return jsonify({"error": "Usuário não encontrado"}), 404
+    planos = user.get("planos_de_viagem", [])
+    return render_template('meus_roteiros.html', planos=planos)
+
+@app.route('/roteiro/<id>')
+def roteiro(id):
+    if 'user' not in session:
+        return redirect(url_for('login')), 302
+    user = mongo.db.usuarios.find_one({"usuario": session['user']})
+    if not user:
+        return jsonify({"error": "Usuário não encontrado"}), 404
+
+    planos = user.get("planos_de_viagem", [])
+    roteiro = next((plano for plano in planos if str(plano["_id"]) == id), None)
+    
+    if not roteiro:
+        return jsonify({"error": "Roteiro não encontrado"}), 404
+
+    return render_template('result.html', dados_guia=roteiro)
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Meus Roteiros</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Meus Roteiros Sugeridos</h1>
+    {% if planos %}
+        <ul>
+            {% for plano in planos %}
+                <li>
+                    <a href="{{ url_for('roteiro', id=plano['_id']) }}">{{ plano['nome'] }}</a>
+                    <p>Data de Início: {{ plano['data_inicio'] }}</p>
+                    <p>Orçamento: R$ {{ plano['orcamento'] }}</p>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Nenhum roteiro encontrado.</p>
+    {% endif %}
+    <a href="{{ url_for('profile') }}">Voltar ao Perfil</a>
+</body>
+</html>
