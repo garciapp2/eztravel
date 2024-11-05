@@ -4,16 +4,20 @@ import openai
 import json
 from decimal import Decimal
 from dotenv import load_dotenv
+from flask_pymongo import PyMongo
+from bson.objectid import ObjectId
 
 
-load_dotenv()
+load_dotenv('.cred')
 app = Flask(__name__)
+app.config["MONGO_URI"] = os.getenv("MONGO_URI")
+mongo = PyMongo(app)
 
 # Configuração da API OpenAI
-openai.api_key = os.getenv('OPENAI_API_KEY')
+# openai.api_key = os.getenv('OPENAI_API_KEY')
 
-if not openai.api_key:
-    raise ValueError("A chave da API OpenAI não está definida. Defina a variável de ambiente 'OPENAI_API_KEY'.")
+# if not openai.api_key:
+#     raise ValueError("A chave da API OpenAI não está definida. Defina a variável de ambiente 'OPENAI_API_KEY'.")
 
 @app.route('/')
 def index():
@@ -21,25 +25,25 @@ def index():
 
 @app.route('/gerar_guia', methods=['POST'])
 def gerar_guia():
-    # Campos obrigatórios
-    nome = request.form.get('nome')
-    orcamento = request.form.get('orcamento')
-    clima = request.form.get('clima')
-    interesses = request.form.get('interesses')
+    dados_formulario = {
+        "nome": request.form.get("nome"),
+        "orcamento": float(request.form.get("orcamento")),
+        "clima": request.form.get("clima"),
+        "interesses": [interesse.strip() for interesse in request.form.get("interesses").split(",")],
+        "data_inicio": request.form.get("data_inicio") if request.form.get("data_inicio") else None,
+        "data_fim": request.form.get("data_fim") if request.form.get("data_fim") else None,
+        "acomodacao": request.form.get("acomodacao"),
+        "transporte": request.form.get("transporte"),
+        "dietas": request.form.get("dietas") if request.form.get("dietas") else None,
+        "companhia": request.form.get("companhia"),
+        "atividade_fisica": request.form.get("atividade_fisica"),
+        "idiomas": request.form.get("idiomas") if request.form.get("idiomas") else None,
+        "acessibilidade": request.form.get("acessibilidade") if request.form.get("acessibilidade") else None,
+        "faixa_etaria": request.form.get("faixa_etaria") if request.form.get("faixa_etaria") else None,
+        "experiencias": request.form.get("experiencias") if request.form.get("experiencias") else None
+    }
 
-    # Novos campos opcionais
-    data_inicio = request.form.get('data_inicio') or 'não especificada'
-    data_fim = request.form.get('data_fim') or 'não especificada'
-    acomodacao = request.form.get('acomodacao')
-    transporte = request.form.get('transporte')
-    dietas = request.form.get('dietas') or 'nenhuma'
-    companhia = request.form.get('companhia')
-    atividade_fisica = request.form.get('atividade_fisica')
-    idiomas = request.form.get('idiomas') or 'não especificado'
-    acessibilidade = request.form.get('acessibilidade') or 'nenhuma'
-    faixa_etaria = request.form.get('faixa_etaria') or 'não especificada'
-    experiencias = request.form.get('experiencias') or 'nenhuma'
-
+    mongo.db.planos_de_viagem.insert_one(dados_formulario)
     # Inicializar as variáveis
     dados_guia = None
     guia = None
@@ -49,21 +53,21 @@ def gerar_guia():
         Você é um assistente de viagem especializado em fornecer planos de viagem personalizados e detalhados.
 
         Informações do usuário:
-        - Nome: {nome}
-        - Orçamento total: {orcamento} reais
-        - Clima preferido: {clima}
-        - Interesses: {interesses}
-        - Data de início da viagem: {data_inicio}
-        - Data de fim da viagem: {data_fim}
-        - Tipo de acomodação preferida: {acomodacao}
-        - Meio de transporte preferido: {transporte}
-        - Dietas ou restrições alimentares: {dietas}
-        - Companhia de viagem: {companhia}
-        - Nível de atividade física: {atividade_fisica}
-        - Idiomas falados: {idiomas}
-        - Necessidades especiais ou acessibilidade: {acessibilidade}
-        - Faixa etária: {faixa_etaria}
-        - Destinos ou experiências anteriores: {experiencias}
+        - Nome: {dados_formulario["nome"]}
+        - Orçamento total: {dados_formulario["orcamento"]} reais
+        - Clima preferido: {dados_formulario["clima"]}
+        - Interesses: {dados_formulario["interesses"]}
+        - Data de início da viagem: {dados_formulario["data_inicio"]}
+        - Data de fim da viagem: {dados_formulario["data_fim"]}
+        - Tipo de acomodação preferida: {dados_formulario["acomodacao"]}
+        - Meio de transporte preferido: {dados_formulario["transporte"]}
+        - Dietas ou restrições alimentares: {dados_formulario["dietas"]}
+        - Companhia de viagem: {dados_formulario["companhia"]}
+        - Nível de atividade física: {dados_formulario["atividade_fisica"]}
+        - Idiomas falados: {dados_formulario["idiomas"]}
+        - Necessidades especiais ou acessibilidade: {dados_formulario["acessibilidade"]}
+        - Faixa etária: {dados_formulario["faixa_etaria"]}
+        - Destinos ou experiências anteriores: {dados_formulario["experiencias"]}
 
         Objetivo:
         - Fornecer um plano de viagem completo que se encaixe estritamente no orçamento do usuário.
@@ -106,7 +110,7 @@ def gerar_guia():
 
         Certifique-se de que:
 
-        - O custo total da viagem não exceda o orçamento de {orcamento} reais.
+        - O custo total da viagem não exceda o orçamento de {dados_formulario["orcamento"]} reais.
         - Todos os campos estejam preenchidos corretamente.
         - O plano atenda às preferências e necessidades do usuário.
         - O JSON esteja bem formatado e válido.
@@ -143,7 +147,7 @@ def gerar_guia():
         else:
             # Verificar se o custo total não excede o orçamento
             custo_total_viagem = Decimal(dados_guia.get('custo_total_viagem', '0'))
-            if Decimal(orcamento) < custo_total_viagem:
+            if Decimal(dados_formulario["orcamento"]) < custo_total_viagem:
                 guia = "Desculpe, o plano de viagem excede o seu orçamento. Por favor, tente novamente com um orçamento maior."
                 dados_guia = None
 
@@ -154,7 +158,7 @@ def gerar_guia():
         guia = "Desculpe, ocorreu um erro ao gerar o plano de viagem. Por favor, tente novamente mais tarde."
         print(f"Erro ao chamar a API da OpenAI: {e}")
 
-    return render_template('result.html', nome=nome, dados_guia=dados_guia, guia=guia)
+    return render_template('result.html', nome=dados_formulario["nome"], dados_guia=dados_guia, guia=guia)
 
 if __name__ == '__main__':
     app.run(debug=True)
