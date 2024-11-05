@@ -101,17 +101,23 @@ def profile():
 def index():
     return render_template('index.html'), 200
 
-@app.route('/historico/<string:_id>', methods=['GET'])
-def get_historico(_id):
-    user = mongo.db.usuarios.find_one({"_id": ObjectId(_id)})
-
-    if user is None:
-        return {"erro": "Usuario não encontrado"}, 404
-        
-    return render_template('historico.html'), 200
+@app.route('/historico')
+def historico():
+    if 'user' not in session:
+        return redirect(url_for('login')), 302
+    user = mongo.db.usuarios.find_one({"usuario": session['user']})
+    if not user:
+        return jsonify({"error": "Usuário não encontrado"}), 404
+    planos = user.get("planos_de_viagem", [])
+    return render_template('historico.html', planos=planos), 200
 
 @app.route('/gerar_guia', methods=['POST'])
 def gerar_guia():
+    if 'user' not in session:
+        return redirect(url_for('login')), 302
+    user = mongo.db.usuarios.find_one({"usuario": session['user']})
+    if not user:
+        return jsonify({"error": "Usuário não encontrado"}), 404
     # Obter dados do formulário
     try:
         nome = request.form.get('nome')
@@ -227,12 +233,14 @@ def gerar_guia():
         dados_guia["orcamento"] = str(orcamento)
         dados_guia["data_inicio"] = data_inicio
         mongo.db.planos_de_viagem.insert_one(dados_guia)
+        
+        mongo.db.usuarios.update_one(
+            {"_id": user['_id']},
+            {"$push": {"planos_de_viagem": dados_guia}}
+        )
 
-        # Retornar sucesso com o guia
-        return jsonify({
-            "message": "Plano de viagem gerado com sucesso.",
-            "dados_guia": dados_guia
-        }), 200
+
+        return render_template('result.html', dados_guia=dados_guia)
 
     except Exception as e:
         print(f"Erro ao chamar a API da OpenAI: {e}")
