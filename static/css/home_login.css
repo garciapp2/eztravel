@@ -69,8 +69,8 @@ body {
     width: 100%;
     max-width: 800px;
     text-align: center;
-    margin: auto; /* Ajuste de posicionamento */
-    background-color: transparent;
+    margin-top: 300px;  
+    background-color: transparent;  
 }
 
 .header h1 {
@@ -103,10 +103,29 @@ body {
     cursor: pointer;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
     transition: background-color 0.3s ease;
+    margin-bottom: 20px; 
+    text-decoration: none;
+}
+
+.meus-roteiros-button {
+    background-color: #ffffff;
+    color: #5a60ef;
+    padding: 12px 24px;
+    font-size: 16px;
+    border-radius: 20px;
+    text-decoration: none;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
 .cta-button:hover {
     background-color: #3b41e0;
+}
+
+.meus-roteiros-button:hover {
+    background-color: #0056b3;
+    color: #ffffff;
 }
 
 .logout-button {
@@ -136,24 +155,18 @@ body {
     color: #000000;
 }
 
-/* Botão "Meus Roteiros" */
-.meus-roteiros-button {
-    margin-top: 50px; 
-    position: relative; 
-    display: block;
-    margin-left: auto;
-    margin-right: auto; 
-    background-color: #ffffff;
-    color: #007bff;
-    padding: 10px 20px;
-    font-size: 16px;
-    border-radius: 5px;
-    text-decoration: none;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Alinha o conteúdo à esquerda */
+    position: absolute;
+    top: 20px;
+    left: 20px;
 }
 
-.meus-roteiros-button:hover {
-    background-color: #0056b3;
-    color: #ffffff;
+.user-greeting {
+    font-size: 18px;
+    color: #000000;
+    margin-bottom: 10px; /* Espaço entre o texto e o botão */
 }
