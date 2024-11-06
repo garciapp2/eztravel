@@ -236,7 +236,11 @@ def roteiro(id):
         return jsonify({"error": "Usuário não encontrado"}), 404
 
     planos = user.get("planos_de_viagem", [])
-    roteiro = next((plano for plano in planos if str(plano["_id"]) == id), None)
+    
+    try:
+        roteiro = next((plano for plano in planos if "_id" in plano and str(plano["_id"]) == id), None)
+    except KeyError:
+        roteiro = None
     
     if not roteiro:
         return jsonify({"error": "Roteiro não encontrado"}), 404
