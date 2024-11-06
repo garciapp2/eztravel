@@ -26,6 +26,10 @@
             <h2>Uma nova maneira de explorar o mundo</h2>
             <p>Planeje sua próxima viagem de forma rápida, fácil e totalmente gratuita</p>
             <a href="{{ url_for('index') }}" class="cta-button">Monte seu itinerário</a>
+            
+            {% if session.get('user') %}
+                <a href="{{ url_for('meus_roteiros') }}" class="meus-roteiros-button">Meus Roteiros</a>
+            {% endif %}
         </main>
     </div>
 </body>
