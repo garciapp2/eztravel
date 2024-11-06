@@ -1,0 +1,118 @@
+/* Reset de margens e padding */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    font-family: Arial, sans-serif;
+    color: #ffffff;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.container {
+    background-color: rgba(255, 255, 255, 0.85);
+    border-radius: 10px;
+    padding: 30px;
+    max-width: 800px;
+    margin: auto;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+h1 {
+    font-size: 32px;
+    font-weight: bold;
+    color: #5a60ef;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+/* Estilo do cartão */
+.card {
+    background-color: #ffffff;
+    color: #333;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
+    margin-bottom: 20px; /* Espaço entre os boxes */
+}
+
+.card-header h4 {
+    font-size: 24px;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+.card-header {
+    background-color: #5a60ef;
+    color: #ffffff;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    padding: 10px 20px;
+}
+
+.card-body {
+    padding: 20px;
+}
+
+.card-body p {
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+.card-body h5 {
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+.card-body ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.card-body li {
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 8px;
+}
+
+/* Custo total e texto de alerta */
+h3 {
+    font-size: 24px;
+    color: #333;
+    margin-top: 40px;
+    font-weight: bold;
+    text-align: center;
+}
+
+/* Alerta */
+.alert {
+    font-size: 18px;
+    padding: 15px;
+    margin-top: 20px;
+}
+
+.btn-primary {
+    background-color: #5a60ef;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 20px;
+    color: #ffffff;
+    transition: background-color 0.3s ease;
+    text-decoration: none; /* Remove o sublinhado */
+    margin-top: 40px; /* Espaçamento maior abaixo do custo total */
+    display: inline-block;
+}
+
+.btn-primary:hover {
+    background-color: #3b41e0;
+    color: #ffffff;
+}

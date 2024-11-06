@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>Meus Roteiros</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="/static/css/meus_roteiros.css">
 </head>
 <body>
     <h1>Meus Roteiros Sugeridos</h1>
     {% if planos %}
         <ul>
             {% for plano in planos %}
-                <li>
+                <li class="plano-item">
                     <a href="{{ url_for('roteiro', id=plano['_id']) }}">{{ plano['nome'] }}</a>
                     <p>Data de Início: {{ plano['data_inicio'] }}</p>
                     <p>Orçamento: R$ {{ plano['orcamento'] }}</p>

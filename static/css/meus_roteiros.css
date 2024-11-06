@@ -1,0 +1,139 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    overflow: hidden;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-image: url('imagem_fundo.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: #ffffff;
+    text-align: center;
+}
+
+.main-header {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    width: calc(100% - 40px);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 36px;
+    font-weight: bold;
+    color: #ffffff;
+    transform: translateX(+500px);
+}
+
+.auth-buttons {
+    display: flex;
+    gap: 10px;
+    transform: translateX(-350px);
+}
+
+.auth-buttons a.sign-in, .auth-buttons button.login {
+    background-color: #ffffff;
+    color: #5a60ef;
+    border: none;
+    padding: 8px 16px;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.auth-buttons a.sign-in:hover, .auth-buttons button.login:hover {
+    background-color: #f0f0f0;
+}
+
+/* Estilo para as caixas de cada plano */
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+.plano-item {
+    background-color: #ffffff;
+    color: #333;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 20px auto;
+    max-width: 600px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: left;
+}
+
+.plano-item a {
+    font-size: 24px;
+    font-weight: bold;
+    color: #5a60ef;
+    text-decoration: none;
+}
+
+.plano-item p {
+    font-size: 16px;
+    color: #555;
+}
+
+/* Overlay para centralizar o conteúdo principal */
+.overlay {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+    width: 100%;
+    max-width: 800px;
+    text-align: center;
+    margin-top: 300px;  /* Aumenta a margem superior para mover o conteúdo mais para baixo */
+    background-color: transparent;
+}
+
+.header h1 {
+    font-size: 36px;
+    font-weight: bold;
+    color: #ffffff;
+    margin-bottom: 20px;
+}
+
+.content h2 {
+    font-size: 28px;
+    font-weight: bold;
+    color: #ffffff;
+    margin-bottom: 10px;
+}
+
+.content p {
+    font-size: 18px;
+    color: #ffffff;
+    margin-bottom: 20px;
+}
+
+/* Botão de chamada para ação */
+.cta-button {
+    background-color: #ffffff;
+    color: #5a60ef;
+    border: none;
+    padding: 12px 24px;
+    font-size: 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease;
+}
+
+.cta-button:hover {
+    background-color: #3b41e0;
+}
