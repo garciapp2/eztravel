@@ -147,14 +147,6 @@ body {
     background-color: #f0f0f0;
 }
 
-.user-greeting {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    font-size: 18px;
-    color: #000000;
-}
-
 
 .user-info {
     display: flex;
@@ -166,7 +158,14 @@ body {
 }
 
 .user-greeting {
-    font-size: 18px;
-    color: #000000;
-    margin-bottom: 10px; /* Espaço entre o texto e o botão */
+    display: inline-block;
+    background-color: #000; /* Cor de fundo leve */
+    color: #ffffff; /* Cor do texto */
+    padding: 10px 15px; /* Espaçamento interno */
+    border-radius: 5px; /* Bordas arredondadas */
+    font-weight: bold;
+    font-size: 1.1em;
+    position: absolute;
+    top: 20px;
+    left: 20px; /* Posiciona o elemento no lado esquerdo */
 }

@@ -221,10 +221,10 @@ def gerar_guia():
                 "descrição": "Breve descrição",
                 "custo": "Custo estimado"
                 }}
-            ],
+            ], (em atividades tente sempre que possivel recomendar algum nao muito generico mas algo que exista de verdade com o nome do local/estabelecimento...)
             "custo_total_dia": "Custo total estimado para o dia (multiplicado pelo número de viajantes)"
             }}
-        ],
+        ], ( no plano de viagem tente usar todo o orcamento, {orcamento}, que o usuario colocou, tudo bem passar um pouco)
         "custo_total_viagem": "Custo total estimado para toda a viagem"
         }}
         """

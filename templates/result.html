@@ -4,6 +4,14 @@
     <meta charset="UTF-8">
     <title>Resultado do Plano de Viagem</title>
     <link rel="stylesheet" href="/static/css/result.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        #map {
+            height: 400px;
+            width: 100%;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
     <div class="container my-5">
@@ -33,6 +41,11 @@
                 {% endfor %}
             </div>
             <h3 class="mt-5">Custo Total da Viagem: {{ dados_guia['custo_total_viagem'] }} reais</h3>
+
+            <!-- Mapa de Destinos -->
+            <h3 class="mt-5">Mapa dos Destinos</h3>
+            <div id="map"></div>
+            
         {% elif guia %}
             <div class="alert alert-danger text-center" role="alert">
                 {{ guia }}
@@ -44,15 +57,50 @@
         {% endif %}
 
         <div class="text-center mt-4">
-            <a href="/" class="btn btn-primary">Voltar à Página Inicial</a>
+            <a href="/profile" class="btn btn-primary">Voltar à Página Inicial</a>
         </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
-></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+    <script>
+        // Inicializa o mapa com uma visão inicial ampla (zoom ajustado)
+        var map = L.map('map').setView([20, 0], 2); // Coordenadas centrais com zoom menor para começar
+    
+        // Adiciona camada do OpenStreetMap
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+    
+        // Lista de destinos da viagem
+        var destinos = [
+            {% for dia in dados_guia['plano_viagem'] %}
+                "{{ dia['destino'] }}",
+            {% endfor %}
+        ];
+    
+        // Adiciona geocodificação para localizar os destinos
+        var geocoder = L.Control.Geocoder.nominatim();
+        var bounds = L.latLngBounds();
+    
+        destinos.forEach(function(destino) {
+            geocoder.geocode(destino, function(results) {
+                if (results && results.length > 0) {
+                    var result = results[0];
+                    var marker = L.marker(result.center).addTo(map)
+                        .bindPopup('<strong>' + destino + '</strong>');
+                    bounds.extend(result.center);
+                }
+            });
+        });
+    
+        // Ajusta o mapa para os limites definidos depois de carregar todos os marcadores
+        map.once('moveend', function() {
+            map.fitBounds(bounds, { maxZoom: 6 }); // Define o zoom máximo ao ajustar os limites
+        });
+    </script>
+    
 </body>
 </html>
