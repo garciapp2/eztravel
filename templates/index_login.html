@@ -8,7 +8,9 @@
 </head>
 <body>
     <header class="main-header">
-        <h1 class="logo">EZTRAVEL</h1>
+        <a href="{{ url_for('home') }}" class="logo-link">
+            <h1 class="logo">EZTRAVEL</h1>
+        </a>
         <div class="auth-buttons">
             <a href="{{ url_for('signin') }}" class="sign-in">Sign In</a>
             <a href="{{ url_for('login') }}" class="sign-in">Login</a>  

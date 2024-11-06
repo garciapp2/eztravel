@@ -7,6 +7,11 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/success.css') }}">
 </head>
 <body style="background-image: url('{{ url_for('static', filename='css/imagem_fundo.jpg') }}'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+    <header class="main-header">
+        <a href="{{ url_for('home') }}" class="logo-link">
+            <h1 class="logo">EZTRAVEL</h1>
+        </a>
+    </header>
     <div class="success-container">
         <h1>Cadastro realizado com sucesso!</h1>
         <p>Bem-vindo(a) ao EZTRAVEL! Seu cadastro foi concluído e você já pode explorar todas as funcionalidades.</p>

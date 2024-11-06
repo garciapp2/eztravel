@@ -8,16 +8,19 @@ from flask_pymongo import PyMongo
 from bson.objectid import ObjectId
 from auth import requires_auth, hash_password, init_mongo, verify_password
 
+# Carregar variáveis de ambiente
 load_dotenv()
 app = Flask(__name__)
 app.config["MONGO_URI"] = os.getenv("MONGO_URI")
 app.secret_key = os.getenv("SECRET_KEY", "vicco")
 mongo = PyMongo(app)
 
+# Configuração da API OpenAI
 openai.api_key = os.getenv('OPENAI_API_KEY')
 if not openai.api_key:
     raise ValueError("A chave da API OpenAI não está definida. Defina a variável de ambiente 'OPENAI_API_KEY'.")
 
+# Inicializar o MongoDB
 init_mongo(mongo)
 
 @app.route('/')
@@ -35,13 +38,13 @@ def create_user():
     email = request.form.get('email')
 
     if not usuario or not senha or not email:
-        return jsonify({"error": "Nome, usuário, senha e email são obrigatórios"}), 400
+        return render_template('signin.html', error="Nome, usuário, senha e email são obrigatórios"), 400
 
     if mongo.db.usuarios.find_one({"usuario": usuario}):
-        return jsonify({"error": "Usuário já existe"}), 409
+        return render_template('signin.html', error="Usuário já está sendo usado"), 409
 
     if mongo.db.usuarios.find_one({"email": email}):
-        return jsonify({"error": "E-mail já cadastrado"}), 409
+        return render_template('signin.html', error="E-mail já cadastrado"), 409
 
     hashed_password = hash_password(senha)
     user_data = {"usuario": usuario, "senha": hashed_password, "email": email}
@@ -51,33 +54,88 @@ def create_user():
 
 @app.route('/success')
 def success():
-    return render_template('sucesso.html'), 200
+    return render_template('sucesso.html'), 200 
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    error = None
     if request.method == 'POST':
-        email = request.form.get('email')
+        email = request.form.get('email')  
         senha = request.form.get('senha')
-        user = mongo.db.usuarios.find_one({"email": email})
+        user = mongo.db.usuarios.find_one({"email": email})  
         if user and verify_password(user['senha'], senha):
-            session['user'] = user['usuario']
+            session['user'] = user['usuario']  
             return redirect(url_for('profile')), 302
-        return jsonify({"error": "E-mail ou senha incorretos"}), 401
+        
+        error = "E-mail ou senha incorretos"
 
-    return render_template('login.html'), 200
+    return render_template('login.html', error=error), 200
 
 @app.route('/logout')
 def logout():
-    session.pop('username', None)
-    session.pop('user', None)
+    session.pop('username', None)  
+    session.pop('user', None)       
     return redirect(url_for('home')), 302
 
 @app.route('/profile')
 def profile():
     if 'user' not in session:
         return redirect(url_for('login')), 302
-
     return render_template('home_login.html', user=session.get('user')), 200
+
+@app.route('/forgot_password', methods=['GET', 'POST'])
+def forgot_password():
+    if request.method == 'POST':
+        email = request.form.get('email')
+        user = mongo.db.usuarios.find_one({"email": email})
+
+        if user:
+            return redirect(url_for('reset_password', email=email))
+        else:
+            error_message = "E-mail não encontrado. Verifique seu e-mail ou cadastre-se."
+            return render_template('forgot_password.html', error_message=error_message)
+
+    return render_template('forgot_password.html')
+
+@app.route('/confirm_email', methods=['POST'])
+def confirm_email():
+    email = request.form.get('email')
+    user = mongo.db.usuarios.find_one({"email": email})
+
+    if user:
+        return redirect(url_for('reset_password', email=email))
+    else:
+        return jsonify({"error": "E-mail não encontrado"}), 404
+
+@app.route('/reset_password', methods=['GET', 'POST'])
+def reset_password():
+    if request.method == 'POST':
+        email = request.form.get('email')
+        nova_senha = request.form.get('nova_senha')
+        confirmar_senha = request.form.get('confirmar_senha')
+
+        if nova_senha != confirmar_senha:
+            error_message = "As senhas não coincidem."
+            return render_template('reset_password.html', email=email, error_message=error_message)
+
+        nova_senha_hash = hash_password(nova_senha)
+        result = mongo.db.usuarios.update_one(
+            {"email": email}, 
+            {"$set": {"senha": nova_senha_hash}}
+        )
+
+        if result.modified_count == 1:
+            return redirect(url_for('success_senha'))
+        else:
+            error_message = "Não foi possível atualizar a senha."
+            return render_template('reset_password.html', email=email, error_message=error_message)
+
+    email = request.args.get('email')
+    return render_template('reset_password.html', email=email)
+
+@app.route('/success_senha')
+def success_senha():
+    return render_template('sucesso_senha.html')
 
 @app.route('/plano')
 def index():
@@ -102,6 +160,7 @@ def gerar_guia():
         return jsonify({"error": "Usuário não encontrado"}), 404
 
     try:
+        # Obter dados do formulário
         nome = request.form.get('nome')
         orcamento = Decimal(request.form.get('orcamento'))
         descricao_viagem = request.form.get('descricao_viagem')
@@ -189,6 +248,8 @@ def gerar_guia():
         try:
             dados_guia = json.loads(json_content, parse_float=Decimal)
         except json.JSONDecodeError as e:
+            print("Erro de decodificação JSON:", e)
+            print("Conteúdo recebido:", conteudo)  # Adicionado para depuração
             return jsonify({"error": "Erro ao processar o plano de viagem."}), 500
 
         custo_total_viagem_str = dados_guia.get('custo_total_viagem', '0').replace("R$", "").strip()
@@ -196,6 +257,7 @@ def gerar_guia():
             custo_total_viagem = Decimal(custo_total_viagem_str)
         except InvalidOperation:
             custo_total_viagem = Decimal(0)
+            print(f"Erro ao converter custo_total_viagem: '{custo_total_viagem_str}'")  # Adicionado para depuração
 
         if custo_total_viagem > orcamento:
             guia = "O plano de viagem excede o orçamento fornecido. Tente novamente com um orçamento maior."
@@ -214,7 +276,10 @@ def gerar_guia():
 
         return render_template('result.html', dados_guia=dados_guia)
 
+    except InvalidOperation:
+        return jsonify({"error": "Erro ao processar valores numéricos. Verifique o orçamento ou valores numéricos."}), 400
     except Exception as e:
+        print("Erro interno:", e)  # Adicionado para depuração
         return jsonify({"error": "Erro interno ao gerar o plano de viagem."}), 500
 
 @app.route('/meus_roteiros')
@@ -236,7 +301,6 @@ def roteiro(id):
         return jsonify({"error": "Usuário não encontrado"}), 404
 
     planos = user.get("planos_de_viagem", [])
-    
     try:
         roteiro = next((plano for plano in planos if "_id" in plano and str(plano["_id"]) == id), None)
     except KeyError:

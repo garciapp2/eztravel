@@ -8,11 +8,16 @@
 </head>
 <body>
     <header class="main-header">
-        <h1 class="logo">EZTRAVEL</h1>
+        <a href="{{ url_for('home') }}" class="logo-link">
+            <h1 class="logo">EZTRAVEL</h1>
+        </a>
     </header>
     <div class="login-overlay">
         <div class="login-container">
             <h1>Login</h1>
+            {% if error %}
+            <div class="error-message">{{ error }}</div>
+            {% endif %}
             <form action="/login" method="POST">
                 <label for="email">E-mail:</label>
                 <input type="email" id="email" name="email" required>
@@ -22,6 +27,11 @@
 
                 <button type="submit">Entrar</button>
             </form>
+
+            <p>Esqueceu sua senha? <a href="{{ url_for('forgot_password') }}">Clique aqui</a></p> <!-- Link para recuperação de senha -->
+
+            <p>Não tem uma conta? <a href="{{ url_for('signin') }}">Cadastre-se</a></p>
+
         </div>
     </div>
 </body>

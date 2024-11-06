@@ -8,11 +8,17 @@
 </head>
 <body>
     <header class="main-header">
-        <h1 class="logo">EZTRAVEL</h1>
+        <a href="{{ url_for('home') }}" class="logo-link">
+            <h1 class="logo">EZTRAVEL</h1>
+        </a>
     </header>
+    
     <div class="signup-overlay">
         <div class="signup-container">
             <h1>Cadastro</h1>
+            {% if error %}
+                <div class="error-message">{{ error }}</div>
+            {% endif %}
             <form action="/usuarios" method="POST">
                 <label for="usuario">Usuário:</label>
                 <input type="text" id="usuario" name="usuario" required>
