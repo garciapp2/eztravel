@@ -6,7 +6,7 @@
 
 html, body {
     height: 100%;
-    overflow: hidden; 
+    overflow: auto; /* Permite rolagem vertical */
 }
 
 body {
@@ -16,11 +16,10 @@ body {
     background-position: center;
     color: #ffffff;
     text-align: center;
-    height: 100vh;
-    overflow: hidden;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
-
-
 
 .main-header {
     position: relative;
@@ -43,7 +42,8 @@ body {
     gap: 10px;
 }
 
-.auth-buttons a.sign-in, .auth-buttons a.login {
+.auth-buttons a.sign-in, 
+.auth-buttons a.login {
     background-color: #ffffff;
     color: #5a60ef;
     border: none;
@@ -55,10 +55,10 @@ body {
     transition: background-color 0.3s ease;
 }
 
-.auth-buttons a.sign-in:hover, .auth-buttons a.login:hover {
+.auth-buttons a.sign-in:hover, 
+.auth-buttons a.login:hover {
     background-color: #f0f0f0;
 }
-
 
 .overlay {
     display: flex;
@@ -69,8 +69,8 @@ body {
     width: 100%;
     max-width: 800px;
     text-align: center;
-    margin-top: 300px;  
-    background-color: transparent;  
+    margin: auto; /* Ajuste de posicionamento */
+    background-color: transparent;
 }
 
 .header h1 {
@@ -92,7 +92,6 @@ body {
     color: #ffffff;
     margin-bottom: 20px;
 }
-
 
 .cta-button {
     background-color: #ffffff;
@@ -135,4 +134,26 @@ body {
     left: 20px;
     font-size: 18px;
     color: #000000;
+}
+
+/* Botão "Meus Roteiros" */
+.meus-roteiros-button {
+    margin-top: 50px; 
+    position: relative; 
+    display: block;
+    margin-left: auto;
+    margin-right: auto; 
+    background-color: #ffffff;
+    color: #007bff;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.meus-roteiros-button:hover {
+    background-color: #0056b3;
+    color: #ffffff;
 }

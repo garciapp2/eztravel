@@ -13,6 +13,7 @@
         {% if session.get('user') %}
             <div class="user-greeting">Olá, {{ session['user'] }}!</div>
             <a href="{{ url_for('logout') }}" class="logout-button">Sair</a>
+            <a href="{{ url_for('meus_roteiros') }}" class="meus-roteiros-button">Meus Roteiros</a>
         {% else %}
             <div class="auth-buttons">
                 <a href="{{ url_for('signin') }}" class="sign-in">Sign In</a>
