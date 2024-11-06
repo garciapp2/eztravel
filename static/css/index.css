@@ -6,21 +6,21 @@
 
 html, body {
     height: 100%;
-    overflow: hidden;  /* Remove a rolagem para evitar barras brancas */
+    overflow: hidden;  
 }
 
 body {
     font-family: Arial, sans-serif;
     background-image: url('imagem_fundo.jpg');
-    background-size: cover;          /* Cobre toda a tela */
-    background-position: center;     /* Centraliza a imagem na tela */
-    background-repeat: no-repeat;    /* Impede que a imagem se repita */
+    background-size: cover;          
+    background-position: center;     
+    background-repeat: no-repeat;    
     color: #ffffff;
     text-align: center;
 }
 
 
-/* Posicionamento do cabeçalho */
+
 .main-header {
     position: absolute;
     top: 20px;
@@ -35,13 +35,13 @@ body {
     font-size: 36px;
     font-weight: bold;
     color: #ffffff;
-    transform: translateX(+500px); /* Ajuste para a direita */
+    transform: translateX(+500px); 
 }
 
 .auth-buttons {
     display: flex;
     gap: 10px;
-    transform: translateX(-350px); /* Ajuste para a esquerda */
+    transform: translateX(-350px); 
 }
 
 .auth-buttons a.sign-in, .auth-buttons button.login {
@@ -52,7 +52,7 @@ body {
     font-size: 14px;
     border-radius: 5px;
     cursor: pointer;
-    text-decoration: none; /* Remove o sublinhado do link */
+    text-decoration: none; 
     transition: background-color 0.3s ease;
 }
 
@@ -70,8 +70,8 @@ body {
     width: 100%;
     max-width: 800px;
     text-align: center;
-    margin-top: 300px;  /* Aumenta a margem superior para mover o conteúdo mais para baixo */
-    background-color: transparent;  /* Remove o fundo azul */
+    margin-top: 300px;  
+    background-color: transparent;  
 }
 
 .header h1 {
@@ -109,4 +109,14 @@ body {
 
 .cta-button:hover {
     background-color: #3b41e0;
+}
+
+.logo {
+    font-size: 36px;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+.logo-link {
+    text-decoration: none; 
 }

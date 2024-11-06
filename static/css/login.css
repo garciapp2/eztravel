@@ -1,4 +1,4 @@
-/* Imagem de fundo para a página de login */
+
 body {
     font-family: Arial, sans-serif;
     min-height: 100vh;
@@ -13,7 +13,7 @@ body {
     overflow: hidden;
 }
 
-/* Estilo da logo "EZTRAVEL" em branco, sem fundo */
+
 .main-header {
     position: absolute;
     top: 20px;
@@ -25,15 +25,15 @@ body {
 }
 
 .logo {
-    color: #ffffff;           /* Texto em branco */
-    font-size: 36px;          /* Aumenta o tamanho da fonte */
+    color: #ffffff;           
+    font-size: 36px;          
     font-weight: bold;
     text-transform: uppercase;
     text-decoration: none;
     transition: color 0.3s ease;
 }
 
-/* Estilo da caixa de login */
+
 .login-overlay {
     display: flex;
     justify-content: center;
@@ -108,4 +108,25 @@ body {
 
 .login-container a:hover {
     color: #3b41e0;
+}
+
+.error-message {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.logo {
+    font-size: 36px;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+.logo-link {
+    text-decoration: none; 
 }

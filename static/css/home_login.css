@@ -6,7 +6,7 @@
 
 html, body {
     height: 100%;
-    overflow: hidden;  /* Remove a rolagem para evitar barras brancas */
+    overflow: hidden; 
 }
 
 body {
@@ -21,7 +21,7 @@ body {
 }
 
 
-/* Posicionamento do cabeçalho */
+
 .main-header {
     position: relative;
     width: 100%;
@@ -69,8 +69,8 @@ body {
     width: 100%;
     max-width: 800px;
     text-align: center;
-    margin-top: 300px;  /* Aumenta a margem superior para mover o conteúdo mais para baixo */
-    background-color: transparent;  /* Remove o fundo azul */
+    margin-top: 300px;  
+    background-color: transparent;  
 }
 
 .header h1 {
@@ -134,5 +134,5 @@ body {
     top: 20px;
     left: 20px;
     font-size: 18px;
-    color: #ffffff;
+    color: #000000;
 }

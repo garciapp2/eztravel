@@ -1,4 +1,4 @@
-/* Imagem de fundo para a página de cadastro */
+
 body {
     font-family: Arial, sans-serif;
     min-height: 100vh;
@@ -23,14 +23,14 @@ body {
     align-items: center;
 }
 
-/* Estilo da caixa de cadastro */
+
 .signup-overlay {
     display: flex;
     justify-content: center;
     align-items: center;
     width: 100%;
     height: 100vh;
-    /* Remova o background-color para deixar o fundo transparente */
+
 }
 
 .signup-container {
@@ -82,4 +82,25 @@ body {
 
 .signup-container button:hover {
     background-color: #3b41e0;
+}
+
+.logo {
+    font-size: 36px;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+.logo-link {
+    text-decoration: none; 
+}
+
+.error-message {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 14px;
 }
